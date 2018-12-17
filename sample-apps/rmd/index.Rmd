@@ -10,7 +10,7 @@ runtime: shiny
 shinyApp(
   
   ui = fluidPage(
-    tags$head(includeScript(c("google-site-tag.js","google-analytics.js"))),
+    tags$head(includeScript("google-analytics.js")),
     selectInput("region", "Region:", 
                 choices = colnames(WorldPhones)),
     plotOutput("phonePlot", height=270)
