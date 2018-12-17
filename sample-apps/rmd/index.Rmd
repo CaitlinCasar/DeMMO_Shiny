@@ -11,6 +11,7 @@ shinyApp(
   
   ui = fluidPage(
     tags$head(includeScript("google-analytics.js")),
+    tags$meta(property="og:image", content="DeMMO_fb_og.jpg"),
     selectInput("region", "Region:", 
                 choices = colnames(WorldPhones)),
     plotOutput("phonePlot", height=270)
