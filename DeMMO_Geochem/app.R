@@ -84,7 +84,7 @@ server <- function(input, output) {
       
       div(img(
         #src = base64enc::dataURI(file = "mine.jpg", mime = "image/jpeg"),
-        src = base64enc::dataURI(file = paste0(selected_site(), ".jpg"), mime = "image/jpeg"),
+        src = base64enc::dataURI(file = paste0(selected_site(), ".JPG"), mime = "image/jpeg"),
         alt = "mine",
         width="300",
         align = "center"),
@@ -118,4 +118,4 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
+shiny::runApp(display.mode="showcase")
