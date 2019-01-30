@@ -6,32 +6,35 @@ library(stringr)
 library(dplyr)
 library(DT)
 library(tools)
+library(grid)
+library(rapportools)
+library(cowplot)
 
 geochem_data <- read.csv("geochem_averages_long.csv", header = TRUE)
+site_coords <- read.csv("site_coords.csv", header = TRUE)
+imgage <- jpeg::readJPEG("mine_levels.jpg")
 
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  theme=shinytheme("cosmo"),
+  theme=shinytheme("slate"),
    
    # Application title
    titlePanel("DeMMO Geochemistry"),
+  fluidRow(
+    column(width = 8, plotOutput("DeMMO_sites", click="plot_click")),
+    column(width = 4,plotOutput("geochemPlot"))),
+  #verbatimTextOutput("info"),
+  h5("Click on the dots on the map to view more information about each DeMMO site. Use the 'Select Parameter' 
+  menu below to view averaged geochemistry at DeMMO."),
+  fluidRow(
+  selectInput(inputId = "parameter", h3("Select parameter"),
+              #label = "Y-axis:",
+              choices = unique(geochem_data$parameter),
+              selected = "temp_C")
    
-   # Sidebar with a slider input for number of bins 
-   sidebarLayout(
-      sidebarPanel(
-        selectInput(inputId = "parameter", h3("Select parameter"),
-                    #label = "Y-axis:",
-                    choices = unique(geochem_data$parameter),
-                    selected = "temp_C")
-      ),
-      
-      
-      # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("geochemPlot")
-      )
-   )
+  ),
+  br(), br(), br()
 )
 
 
@@ -43,16 +46,72 @@ server <- function(input, output) {
  #     geom_point() +
  #     geom_line(size=1.5) 
  # })
-
-
+  selected_site <- reactiveVal()
+  selected_site_info <- reactiveVal()
+  observeEvent(input$plot_click,{
+    selected_site(as.character(nearPoints(site_coords, input$plot_click)[[1]]))
+  })
+  
+  observeEvent(input$plot_click,{
+    selected_site_info(as.character(nearPoints(site_coords, input$plot_click)[[4]]))
+  })
+  
+  output$DeMMO_sites <- renderPlot({
+  ggplot(site_coords, aes(x, y, asp=1)) +
+    annotation_custom(rasterGrob(imgage, 
+                                 width = unit(1,"npc"), 
+                                 height = unit(1,"npc"))) +
+    geom_point(size=5, color="#AFD36C") +
+    scale_x_continuous(limits = c(0, 539.667)) +
+    scale_y_continuous(limits = c(0, 227.026)) +
+    theme(legend.position="none") +
+      theme(line = element_blank(),
+            text = element_blank(),
+            title = element_blank(),
+            plot.background = element_rect(
+              fill = "#272b30")) +
+      theme(plot.margin=grid::unit(c(0,0,0,0), "line"))
+    #theme_nothing() + labs(x = NULL, y = NULL) 
+    #plot_grid(geochem_plot, scale=1.1)
+      
+  })
+  observeEvent(input$plot_click, ignoreInit=T,ignoreNULL = T,{
+    if(!is.empty(selected_site())){
+    showModal(modalDialog(
+      title = paste0(selected_site()),
+      
+      div(img(
+        #src = base64enc::dataURI(file = "mine.jpg", mime = "image/jpeg"),
+        src = base64enc::dataURI(file = paste0(selected_site(), ".jpg"), mime = "image/jpeg"),
+        alt = "mine",
+        width="300",
+        align = "center"),
+      footer = modalButton("Close"),
+      easyClose = TRUE
+    ),
+    h5(selected_site_info()),
+    style="text-align: center;")
+    )
+    }
+  })
+  
   output$geochemPlot <- renderPlot({
   data <- geochem_data %>%
     filter(parameter == input$parameter)
-  geochem_plot <- ggplot(data, aes(measured, Site, group=parameter, color=parameter)) +
-    geom_point() +
-    geom_path() 
-  geochem_plot
+  ggplot(data, aes(measured, reorder(Site, desc(Site)), group=parameter)) +
+    geom_path(color="black", linetype="dotted") +
+    geom_point(size = 5, color="#AFD36C") +
+    xlab(input$parameter) +
+    theme_grey() +
+    theme(legend.position="none") +
+    theme(axis.title.y=element_blank()) 
   })
+  #output$info <- renderPrint({
+    #selected_site_info
+    # With base graphics, need to tell it what the x and y variables are.
+    #as.character(nearPoints(site_coords, input$plot_click)[[1]])
+    # nearPoints() also works with hover and dblclick events
+  #})
 }
 
 # Run the application 
