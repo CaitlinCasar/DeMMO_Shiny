@@ -8,7 +8,7 @@ library(DT)
 library(tools)
 library(grid)
 library(rapportools)
-library(cowplot)
+
 
 geochem_data <- read.csv("geochem_averages_long.csv", header = TRUE)
 site_coords <- read.csv("site_coords.csv", header = TRUE)
@@ -48,13 +48,13 @@ server <- function(input, output) {
  # })
   selected_site <- reactiveVal()
   selected_site_info <- reactiveVal()
-  observeEvent(input$plot_click,{
-    selected_site(as.character(nearPoints(site_coords, input$plot_click)[[1]]))
-  })
+  #observeEvent(input$plot_click,{
+    #selected_site(as.character(nearPoints(site_coords, input$plot_click)[[1]]))
+  #})
   
-  observeEvent(input$plot_click,{
-    selected_site_info(as.character(nearPoints(site_coords, input$plot_click)[[4]]))
-  })
+  #observeEvent(input$plot_click,{
+    #selected_site_info(as.character(nearPoints(site_coords, input$plot_click)[[4]]))
+  #})
   
   output$DeMMO_sites <- renderPlot({
   ggplot(site_coords, aes(x, y, asp=1)) +
@@ -76,6 +76,8 @@ server <- function(input, output) {
       
   })
   observeEvent(input$plot_click, ignoreInit=T,ignoreNULL = T,{
+    selected_site(as.character(nearPoints(site_coords, input$plot_click)[[1]]))
+    selected_site_info(as.character(nearPoints(site_coords, input$plot_click)[[4]]))
     if(!is.empty(selected_site())){
     showModal(modalDialog(
       title = paste0(selected_site()),
