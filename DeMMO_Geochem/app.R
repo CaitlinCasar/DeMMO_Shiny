@@ -22,7 +22,7 @@ ui <- fluidPage(
    # Application title
    titlePanel("DeMMO Geochemistry"),
   fluidRow(
-    column(width = 7, plotOutput("DeMMO_sites", click="plot_click", height="auto")),
+    column(width = 7, plotOutput("DeMMO_sites", click="plot_click")),
     column(width = 5,plotOutput("geochemPlot"))),
   
   #verbatimTextOutput("info"),
@@ -41,7 +41,7 @@ ui <- fluidPage(
 
 
 # Define server logic required to draw a histogram
-server <- function(input, output, session) {
+server <- function(input, output) {
   
  # output$geochemPlot <- renderPlot({
  #   ggplot(geochem_data, aes(Site, input$parameter, color=Site)) +
@@ -77,9 +77,6 @@ server <- function(input, output, session) {
     #theme_nothing() + labs(x = NULL, y = NULL) 
     #plot_grid(geochem_plot, scale=1.1)
       
-  },
-  height = function() {
-    session$clientData$DeMMO_sites_width
   })
   observeEvent(input$plot_click, ignoreInit=T,ignoreNULL = T,{
     selected_site(as.character(nearPoints(site_coords, input$plot_click)[[1]]))
