@@ -88,9 +88,9 @@ server <- function(input, output) {
         alt = "mine",
         width="300",
         align = "center"),
-      footer = modalButton("Close"),
-      easyClose = TRUE
+      footer = modalButton("Close")
     ),
+    easyClose = TRUE,
     h5(selected_site_info()),
     style="text-align: center;")
     )
