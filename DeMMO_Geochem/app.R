@@ -22,19 +22,21 @@ ui <- fluidPage(
    # Application title
    titlePanel("DeMMO Geochemistry"),
   fluidRow(
-    column(width = 8, plotOutput("DeMMO_sites", click="plot_click")),
-    column(width = 4,plotOutput("geochemPlot"))),
+    column(width = 7, plotOutput("DeMMO_sites", click="plot_click")),
+    column(width = 5,plotOutput("geochemPlot"))),
+  
   #verbatimTextOutput("info"),
-  h5("Click on the dots on the map to view more information about each DeMMO site. Use the 'Select Parameter' 
-  menu below to view averaged geochemistry at DeMMO."),
+  
   fluidRow(
-  selectInput(inputId = "parameter", h3("Select parameter"),
-              #label = "Y-axis:",
+    column(width = 7, h5("Click on the dots on the map to view more information about each DeMMO site. Use the 
+  menu below the plot area to view average fracture fluid geochemistry at DeMMO.", br(), h6("Published geochemical data from Osburn
+    et al. 2014."))),
+    column(width = 5,selectInput(inputId = "parameter", #h5("Select parameter"),
+              label = "",
               choices = unique(geochem_data$parameter),
-              selected = "temp_C")
+              selected = "Choose a parameter"))
    
-  ),
-  br(), br(), br()
+  )
 )
 
 
