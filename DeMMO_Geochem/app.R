@@ -69,7 +69,8 @@ server <- function(input, output) {
             text = element_blank(),
             title = element_blank(),
             plot.background = element_rect(
-              fill = "#272b30")) +
+              fill = "#272b30",
+              color = "#272b30")) +
       theme(plot.margin=grid::unit(c(0,0,0,0), "line"))
     #theme_nothing() + labs(x = NULL, y = NULL) 
     #plot_grid(geochem_plot, scale=1.1)
