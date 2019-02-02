@@ -17,6 +17,12 @@ imgage <- jpeg::readJPEG("mine_levels.jpg")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  tags$head(includeScript("google-analytics.js")),
+  tags$meta(property="og:title", content="Shiny"),
+  tags$meta(property="og:type", content="website"),
+  tags$meta(property="og:url", content="https://deepminemicrobialobservatory.com/shiny/sample-apps/rmd/"),
+  tags$meta(property="og:image", content="DeMMO_fb_og.jpg"),
+  
   theme=shinytheme("slate"),
    
    # Application title
