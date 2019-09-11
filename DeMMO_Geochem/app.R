@@ -27,7 +27,37 @@ imgage <- jpeg::readJPEG("mine_levels.jpg")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  tags$head(includeScript("google-analytics.js")),
+  tags$head(includeScript("google-analytics.js"),
+            tags$style(HTML("
+      @import url('//fonts.googleapis.com/css?family=Alfa+Slab+One|Bowlby+One+SC|Cutive+Mono|Megrim|Monoton|Montserrat:400,900|Playfair+Display|Roboto+Mono&display=swap');
+                            
+                            h1 {
+                            font-family: 'Montserrat', sans-serif;
+                            font-weight: 900;
+                            line-height: 1.1;
+                            color: #ccbd1a;
+                            }
+                            h5 {
+                            line-height: 20px;
+                            font-family: 'Montserrat', sans-serif;
+                            font-weight: 400
+
+                            }
+                            h6{
+                            line-height: 20px;
+                            font-family: 'Montserrat', sans-serif;
+                            font-weight: 400
+                            }
+                            
+                            "))
+            ),
+  tags$style(HTML('.js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {
+                                                  background: #ccbd1a;
+                  border-top: 1px solid #ccbd1a ;
+                  border-bottom: 1px solid #ccbd1a ;}
+                  
+                  /* changes the colour of the number tags */
+                  .irs-from, .irs-to, .irs-single { background: #ccbd1a }')),
   tags$meta(property="og:title", content="Shiny"),
   tags$meta(property="og:type", content="website"),
   tags$meta(property="og:url", content="https://deepminemicrobialobservatory.com/shiny/sample-apps/rmd/"),
@@ -36,11 +66,11 @@ ui <- fluidPage(
   theme=shinytheme("slate"),
   
   # Application title
-  titlePanel("DeMMO Geochemistry"),
+  headerPanel("DeMMO"),
   fluidRow(
     column(width = 7, plotlyOutput("DeMMO_sites"),
            verbatimTextOutput("click")),
-    column(width = 5,plotlyOutput("geochemPlot"))),
+    column(width = 5, plotlyOutput("geochemPlot"))),
   
   #verbatimTextOutput("info"),
   
@@ -53,7 +83,7 @@ ui <- fluidPage(
                        label = "",
                        choices = unique(geochem_data$parameter),
                        selected = "Please choose a parameter."),
-           sliderInput("slider", "Time", min = min(geochem_data$date),max =max(geochem_data$date),value=c(min(geochem_data$date),max =max(geochem_data$date)),timeFormat="%b %Y"),
+           sliderInput("slider", "", min = min(geochem_data$date),max =max(geochem_data$date),value=c(min(geochem_data$date),max =max(geochem_data$date)),timeFormat="%b %Y"),
            verbatimTextOutput("range")
     )
     
@@ -73,7 +103,7 @@ server <- function(input, output) {
               hoverinfo="text",
               marker = list(
                 opacity = 0.7, sizemode = "diameter",
-                color = "#AFD36C",
+                color = "#ccbd1a",
                 size = 20
               ),
               source = "A") %>%
@@ -117,19 +147,21 @@ server <- function(input, output) {
     selected_coords <- event_data("plotly_click", source="A")
     selected_site <- site_coords %>% dplyr::filter(x %in% (selected_coords$x-5):(selected_coords$x+5) & y %in% (selected_coords$y-5):(selected_coords$y+5))
     showModal(modalDialog(
-      title = paste0(selected_site[1]),
+      title = h3(paste0(selected_site[1]), style="font-family: 'Montserrat', sans-serif;
+                 font-weight: 900;
+                 color: #ccbd1a;"),
       
       div(img(
         src = base64enc::dataURI(file = paste0(selected_site[1], ".JPG"), mime = "image/jpeg"),
         alt = "mine",
-        width="300",
+        width="100%",
         align = "center",
-        margin(0, 'auto')),
+        style="display: block; margin-left: auto; margin-right: auto;"),
         footer = modalButton("Close")
       ),
       easyClose = TRUE,
-      h6(selected_site[4]),
-      style="text-align: justify;")
+      h6(selected_site[4]), 
+      style="text-align: justify; line-height: 20px;")
     )
     #}
   })
