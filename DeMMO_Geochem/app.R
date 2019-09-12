@@ -77,7 +77,9 @@ ui <- fluidPage(
   fluidRow(
     column(width = 7, h5("Click on the dots on the map to view more information about each DeMMO site. Use the 
                          menu below the plot area to view average fracture fluid geochemistry at DeMMO.", br(), h6("Published geochemical data from Osburn
-                                                                                                                   et al. 2019."))),
+                                                                                                                   et al. 2019.")),
+           uiOutput("tab")
+           ),
     column(width = 5,
            selectInput(inputId = "parameter", #h5("Select parameter"),
                        label = "",
@@ -164,6 +166,12 @@ server <- function(input, output) {
       style="text-align: justify; line-height: 20px;")
     )
     #}
+  })
+  
+  url <- a(">>> Return to DeMMO Homepage", href="https://deepminemicrobialobservatory.com", style="font-family: 'Montserrat', sans-serif;
+           font-weight: 400; font-size: 12px")
+  output$tab <- renderUI({
+    tagList("", url)
   })
   
   # output$click <- renderPrint({
